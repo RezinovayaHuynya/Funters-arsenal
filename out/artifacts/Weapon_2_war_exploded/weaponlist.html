@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>订单管理</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body class="is-preload" onload="loadData(1)">
+<!-- ajax请求服务器，拿到json，解析，展示 -->
+<script type="text/javascript">
+    function getXMLHttpRequest(){
+        var xmlhttp;
+        if(window.XMLHttpRequest){
+            //目前主流浏览器
+            xmlhttp=new XMLHttpRequest();
+        }else{
+            //ie 6  7
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        return xmlhttp;
+    }
+    var curr_pageno=0;
+    var pagesize=5;
+    var pagesum=0;
+    function loadData(pageno){
+        var xmlhttp=getXMLHttpRequest();
+        xmlhttp.onreadystatechange=function(){
+            if(xmlhttp.readyState==4&&xmlhttp.status==200){
+                //4代表响应数据已经读取完毕。
+                //200代表代表读取的响应数据是一个成功的数据。
+                var str=xmlhttp.responseText;
+                //str就是json对应的字符串
+                var jsonObject=JSON.parse(str);
+                curr_pageno=jsonObject.pageNo;
+                pagesum=jsonObject.pageSum;
+                var jsonArray=jsonObject.product;
+                var temp="";
+                for (var i = 0; i < jsonArray.length; i++) {
+                    temp=temp+"<tr><td align='center'>"+jsonArray[i].id+"</td><td align='center'>"+jsonArray[i].username+"</td><td align='center'>"+jsonArray[i].weaponname+"</td><td align='center'>"+jsonArray[i].number+"</td><td align='center'>"+jsonArray[i].adress+"</td><td align='center'><a href=\"show_p?id="+jsonArray[i].id+"\">修改</a></td><td align='center'><a href=\"del_p?id="+jsonArray[i].id+"\">删除</a></td></tr>"
+                }
+
+                document.getElementById("trs").innerHTML=temp;
+
+                //开始设置生成页码的逻辑
+                temp="";
+                temp=temp+"<li><a href=\"#\" onclick=\"gopage(-1)\">上一页</a></li>";
+                for (var i = 0; i < jsonObject.pageSum; i++) {
+                    temp=temp+"<li><a href=\"#\" onclick=\"loadData("+(i+1)+")\">"+(i+1)+"</a></li>";
+                }
+                temp=temp+"<li><a href=\"#\" onclick=\"gopage(1)\">下一页</a></li>";
+
+                document.getElementById("lis").innerHTML=temp;
+            }
+
+        };
+        //javascript请求的网址
+        var url="info_p";
+        //打开连接
+        xmlhttp.open("post",url);
+        //设置请求信息的头
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        //发送数据
+        xmlhttp.send("pagesize="+pagesize+"&pageno="+pageno);
+        return false;
+
+    }
+    function gopage(n){
+        if(curr_pageno+n==0){
+            return ;
+        }
+        if(curr_pageno+n==pagesum+1){
+            return ;
+        }
+
+        curr_pageno=curr_pageno+n;
+        loadData(curr_pageno);
+    }
+</script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+<!-- Wrapper-->
+<div id="wrapper">
+
+	<!-- Nav -->
+	<nav id="nav">
+		<a href="#login" class="icon fa-address-book"></a>
+	</nav>
+
+	<!-- Main -->
+	<div id="main">
+
+		<!-- login -->
+		<article id="login" class="panel">
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column" style="
+         height: 533.3333px;
+          ">
+			<h3>
+				所有订单
+			</h3>
+			<div class="col-12">
+				<button type="submit" class="btn btn-default" onclick=" returnindex();">返回主界面</button>
+			</div>
+			<table class="table" style="
+            width: 1000px;
+            height: 100px;
+             ">
+				<div>
+				<thead>
+				<tr>
+					<th>
+						编号
+					</th>
+					<th>
+						用户名
+					</th>
+					<th>
+						武器名
+					</th>
+					<th>
+						数量
+					</th>
+					<th>
+						地址
+					</th>
+					<th>
+						修改
+					</th>
+					<th>
+						删除
+					</th>
+				</tr>
+				</thead>
+				</div>
+				<tbody id="trs">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<ul class="pagination" id="lis">
+
+			</ul>
+		</div>
+	</div>
+</div>
+		</article>
+	</div>
+</div>
+<script>
+    function returnindex(){
+        window.self.location = "index.jsp";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Funter的军火库</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript">
+
+	//AJAX
+	//javascript可以访问网络
+	function getXMLHttpRequest(){
+		var xmlhttp;
+		if(window.XMLHttpRequest){
+			//目前主流浏览器
+			xmlhttp=new XMLHttpRequest();
+		}else{
+			//ie 6  7
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		return xmlhttp;
+	}
+	//如何发送数据呢？
+	function onbuttonclick2(){
+		//这里我们需要拿到用户输入的用户名和密码
+        var inputUsername=document.getElementById("loginusername");
+		var inputPassword=document.getElementById("loginpassword");
+		var username=inputUsername.value;
+		var password=inputPassword.value;
+		//拿着username和password发送给servlet
+		//servlet返回数据告诉我到底用户名密码对不对
+		//我拿着结果决定到底跳转不跳转
+		var xmlhttp=getXMLHttpRequest();
+		xmlhttp.onreadystatechange=function(){
+			if(xmlhttp.readyState==4&&xmlhttp.status==200){
+				//4代表响应数据已经读取完毕。
+				//200代表代表读取的响应数据是一个成功的数据。
+				var str=xmlhttp.responseText;
+				 if(str=="true"){
+						//跳转
+						document.getElementById("text").innerHTML="登录成功";
+						document.getElementById("text").style.color="green";
+						window.location.href="index.jsp";
+					}
+				else{
+					//不跳转
+					document.getElementById("text").innerHTML="用户名密码错误";
+					document.getElementById("text").style.color="red";
+				}
+			}
+			
+		};
+		//javascript请求的网址
+		var url="checklogininfo";
+		//打开连接
+		xmlhttp.open("post",url);
+		//设置请求信息的头
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		//发送数据
+		xmlhttp.send("username="+username+"&password="+password);
+		return false;
+	
+	}
+
+
+</script>
+		<script type="text/javascript">
+            var n=0;
+            function onimgclick() {
+                document.getElementById("img").src="imagecode?n="+n;
+                n++;
+            }
+		</script>
+		<script type="text/javascript">
+            function getXMLHttpRequest(){
+                var xmlhttp;
+                if(window.XMLHttpRequest){
+                    //目前主流浏览器
+                    xmlhttp=new XMLHttpRequest();
+                }else{
+                    //ie 6  7
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                return xmlhttp;
+            }
+            var tempusername=false;
+            function onusernamekeyup(){
+                var username=document.getElementById("registerusername").value;
+                var temp=document.getElementById("temp");
+                if(username.length<6){
+                    temp.style.color="red";
+                    temp.innerHTML="用户名至少六位";
+                    tempusername=false;
+                    return ;
+                }
+                var xmlhttp=getXMLHttpRequest();
+                xmlhttp.onreadystatechange=function(){
+                    if(xmlhttp.readyState==4&&xmlhttp.status==200){
+
+                        var str=xmlhttp.responseText;
+
+                        if(str=="true"){
+                            //验证码正确
+                            temp.style.color="green";
+                            temp.innerHTML="用户名可用";
+                            tempusername=true;
+                        }else{
+                            //验证码错误
+                            temp.style.color="red";
+                            temp.innerHTML="用户名已经存在";
+                            tempusername=false;
+                        }
+                    }
+
+                };
+
+                var url="checkusername";
+                //打开连接
+                xmlhttp.open("post",url);
+                //设置请求信息的头
+                xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                //发送数据
+                xmlhttp.send("username="+username);
+                return false;
+
+            }
+            var tempcheckcode=false;
+            function oncheckcodekeyup(){
+                var usercheckcode=document.getElementById("checkcode").value;
+                var temp=document.getElementById("temp");
+                if(usercheckcode.length!=4){
+                    temp.style.color="red";
+                    temp.innerHTML="验证码不对";
+                    tempcheckcode=false;
+                }
+
+                var xmlhttp=getXMLHttpRequest();
+                xmlhttp.onreadystatechange=function(){
+                    if(xmlhttp.readyState==4&&xmlhttp.status==200){
+
+                        var str=xmlhttp.responseText;
+
+                        if(str==usercheckcode){
+                            //验证码正确
+                            temp.style.color="green";
+                            temp.innerHTML="验证码正确";
+                            tempcheckcode=true;
+                        }else{
+                            //验证码错误
+                            temp.style.color="red";
+                            temp.innerHTML="验证码不对";
+                            tempcheckcode=false;
+                        }
+                    }
+
+                };
+
+                var url="textcode";
+                //打开连接
+                xmlhttp.open("post",url);
+                //设置请求信息的头
+                xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                //发送数据
+                xmlhttp.send();
+                return false;
+
+            }
+
+            var temppassword=false;
+            function onrepasswordkeyup(){
+                var password=document.getElementById("registerpassword").value;
+                var repassword=document.getElementById("repassword").value;
+                var temp=document.getElementById("temp");
+                if(password==repassword){
+                    temp.style.color="green";
+                    temp.innerHTML="两次密码输入一致";
+                    temppassword=true;
+                }else{
+                    temp.style.color="red";
+                    temp.innerHTML="两次密码输入不一致";
+                    temppassword=false;
+                }
+            }
+
+            function onregisterclick(){
+
+                return tempusername && tempcheckcode && temppassword;
+            }
+		</script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper-->
+			<div id="wrapper">
+
+				<!-- Nav -->
+					<nav id="nav">
+                        <a href="#login" class="icon fa-sign-in"><span>登录</span></a>
+						<a href="#register" class="icon fa-address-card"><span>注册</span></a>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- login -->
+							<article id="login" class="panel">
+								<header>
+									<h1>                  登录 Funter的军火库                 </h1>
+									<p>加入军火买卖，性感壮汉在线发货</p>
+								</header>
+								<div class="row clearfix">
+		                        <div  class="col-md-12 column">
+			                    <h4 id="text" style="position:relative;">
+				                                                  请登录
+			                    </h4>
+		                        </div>
+	                            </div>
+                                <form action="login" class="form-horizontal" role="form" method="post">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <input type="text" name="username" placeholder="用户名" class="form-control" id="loginusername" />
+                                            </div>
+                                            <div class="col-12">
+                                                <input type="password" name="password" placeholder="密码" class="form-control" id="loginpassword" />
+
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-default" onclick="return onbuttonclick2();">登录</button>
+                                            </div>
+                                        </div>
+                                    </div>
+									</div>
+                                </form>
+							</article>
+                        <!-- register-->
+                        <article id="register" class="panel">
+                            <header>
+                                <h4>注册 Funter的军火库，开始你的军火买卖生涯</h4>
+                            </header>
+                            <form role="form" action="add" method="post">
+                                <div>
+                                    <div class="row">
+                                        <div class="col-12">
+											<label for="exampleInputEmail1">用户名</label><input onkeyup="onusernamekeyup();" type="text" class="form-control" id="registerusername" name="username" placeholder="用户名" />
+                                        </div>
+                                        <div class="col-12">
+											<label for="exampleInputPassword1">密码</label><input onkeyup="onrepasswordkeyup();" type="password" class="form-control" id="registerpassword" name="password" placeholder="密码" />
+                                        </div>
+										<div class="form-group">
+											<label for="exampleInputPassword1">密码重复</label><input onkeyup="onrepasswordkeyup();" type="password" name="repassword" id="repassword" class="form-control" />
+										</div>
+                                        <div class="col-12">
+											<label for="exampleInputPassword1">邮箱</label><input type="text" class="form-control" id="email "name="email" placeholder="邮箱" />
+                                        </div>
+                                        <div class="col-12">
+											<label for="exampleInputPassword1">简介</label><textarea name="message" class="form-control" id="message" placeholder="个人备注" rows="2"></textarea>
+                                        </div>
+										<div class="form-group">
+											<label for="exampleInputPassword1">验证码</label><input type="text" name="checkcode" id="checkcode" onkeyup="oncheckcodekeyup();" class="form-control" /><img src="imagecode" id="img" onclick="onimgclick();"/>
+										</div>
+										<h6 id="temp">
+											欢迎使用
+										</h6>
+                                        <div class="col-12">
+                                            <input type="submit" class="btn btn-default" onclick="return onregisterclick()" value="注册" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </article>
+					</div>
+
+				<!-- Footer -->
+					<div id="footer">
+						<ul class="copyright">
+							<li>&copy; Funter的军火库.</li><li>Design: Funter</li>
+						</ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
